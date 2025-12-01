@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Site</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --card-bg: rgba(255, 255, 255, 0.06);
+      --card-hover: rgba(255, 255, 255, 0.12);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow-x: hidden;
+    }
+    body {
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      background: #000;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    /* === INTRO ANIMATION === */
+    .intro-screen {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #000000, #0a011a, #1f0141, #3a0077);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeOut 0.8s ease 2.5s forwards;
+    }
+    .intro-text {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      opacity: 0;
+      transform: scale(0.8);
+      animation: introReveal 1.5s ease 0.3s forwards;
+      text-shadow: 0 0 30px rgba(180, 50, 255, 0.8), 0 0 60px rgba(180, 50, 255, 0.5);
+    }
+    @keyframes introReveal {
+      0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+      50% { opacity: 1; transform: scale(1.05) translateY(0); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes fadeOut {
+      to { opacity: 0; visibility: hidden; }
+    }
+    .main-content {
+      opacity: 0;
+      animation: contentFadeIn 0.8s ease 3s forwards;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    @keyframes contentFadeIn {
+      to { opacity: 1; }
+    }
+    /* === BACKGROUND === */
+    .bg-gradient {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: linear-gradient(135deg, #000000, #0a011a, #1f0141, #3a0077);
+      background-size: 300% 300%;
+      animation: pulseGradient 15s ease infinite;
+    }
+    @keyframes pulseGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .floating-dots {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .dot {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 50%;
+      animation: floatDot linear infinite;
+    }
+    @keyframes floatDot {
+      0% { transform: translateY(100vh); opacity: 0; }
+      20% { opacity: 0.9; }
+      100% { transform: translateY(-10vh); opacity: 0; }
+    }
+    .cursor-glow {
+      position: fixed;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(180, 50, 255, 0.55), transparent 70%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      filter: blur(40px);
+      transition: opacity .2s ease;
+      opacity: 0;
+    }
+    .container {
+      width: 100%;
+      max-width: 920px;
+      padding: 36px 20px;
+      text-align: center;
+      position: relative;
+    }
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 28px;
+      gap: 10px;
+    }
+    #clock {
+      font-size: 26px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      background: rgba(255,255,255,0.08);
+      padding: 10px 18px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+    #time-emoji {
+      font-size: 32px;
+      margin-top: -10px;
+      margin-bottom: 8px;
+      animation: pulse 2s infinite;
+      display: block;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    header img.logo {
+      width: 84px;
+      height: 84px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.02);
+    }
+    h1 {
+      font-size: 22px;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+    p.lead {
+      color: #e6eef8;
+      opacity: 0.85;
+      margin-top: 12px;
+      margin-bottom: 20px;
+      font-weight: 300;
+    }
+    .links {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+      margin: 20px auto 0;
+      width: fit-content;
+    }
+    .links .row {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: nowrap;
+    }
+    @media (max-width: 520px) {
+      .links .row { flex-wrap: wrap; }
+    }
+    .card {
+      width: 130px;
+      height: 130px;
+      background: var(--card-bg);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #fff;
+      transition: transform .18s, background .18s, box-shadow .18s;
+      backdrop-filter: blur(10px) saturate(180%);
+      -webkit-backdrop-filter: blur(10px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: inset 0 0 12px rgba(255,255,255,0.25), inset 0 0 25px rgba(180,220,255,0.18), 0 4px 15px rgba(255,255,255,0.12);
+    }
+    .card img {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      padding: 6px;
+      background: rgba(255,255,255,0.03);
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      background: var(--card-hover);
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6), inset 0 0 18px rgba(200,220,255,0.45);
+    }
+    @media (max-width: 600px) {
+      .intro-text { font-size: 36px; }
+    }
+
+    /* === Curiosidades Card === */
+    .curiosidades-card {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 220px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 12px;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .curiosidades-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .curiosidades-header h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .curiosidades-content {
+      display: none;
+      margin-top: 8px;
+      color: #e6eef8;
+      font-weight: 300;
+    }
+    .curiosidades-content.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    #snakeCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Intro Screen -->
+  <div class="intro-screen">
+    <div class="intro-text">Olá, Guilherme! 👋</div>
+  </div>
+  <!-- Main Content -->
+  <div class="main-content">
+    <canvas id="snakeCanvas"></canvas>
+    <div class="bg-gradient"></div>
+    <div class="floating-dots" id="dots"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+    <div class="container">
+      <header>
+        <div id="clock">00:00:00</div>
+        <span id="time-emoji"></span>
+        <img class="logo" src="Imagens/logo-escola.png" alt="Logo" onerror="this.style.display='none'">
+        <h1 id="greeting">Carregando...</h1>
+      </header>
+      <p class="lead">Escolha um atalho abaixo:</p>
+      <nav class="links" aria-label="Atalhos rápidos">
+        <div class="row">
+          <a class="card" href="https://www.tiktok.com" target="_blank">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=tiktok.com" alt="TikTok">
+            <span>Tiktok</span>
+          </a>
+          <a class="card" href="https://mail.google.com" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/2560px-Gmail_icon_%282020%29.svg.png" alt="Gmail">
+            <span>Gmail</span>
+          </a>
+          <a class="card" href="https://www.instagram.com" target="_blank">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=instagram.com" alt="Instagram">
+            <span>Instagram</span>
+          </a>
+        </div>
+        <div class="row">
+          <a class="card" href="https://www.youtube.com" target="_blank">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=youtube.com" alt="YouTube">
+            <span>YouTube</span>
+          </a>
+          <a class="card" href="https://www.twitch.tv" target="_blank">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=twitch.tv" alt="Twitch">
+            <span>Twitch</span>
+          </a>
+          <a class="card" href="https://chat.openai.com" target="_blank">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=chat.openai.com" alt="ChatGPT">
+            <span>ChatGPT</span>
+          </a>
+        </div>
+      </nav>
+    </div>
+    <!-- Curiosidades Card -->
+    <div class="curiosidades-card" id="curiosidadesCard">
+      <div class="curiosidades-header">
+        <h3>Curiosidades</h3>
+      </div>
+      <div class="curiosidades-content" id="curiosidadesContent">
+        <p>Você sabia que pode controlar a cobrinha no fundo da tela?</p>
+        <p>Use as <strong>setas do teclado</strong> (↑, ↓, ←, →) para movê-la!</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    // As frases de saudação
+    const GREETINGS = {
+      morning: { text: "Bom dia, Guilherme! O que você vai usar hoje?", emoji: "☀️☕" },
+      afternoon: { text: "Boa tarde, Guilherme! O que você vai usar hoje?", emoji: "😎🔥" },
+      evening: { text: "Boa noite, Guilherme! O que você vai usar hoje?", emoji: "🌙⭐" },
+      night: { text: "Madrugada, Guilherme! O que você vai usar hoje?", emoji: "🦉💻" }
+    };
+    // Animação de Fundo (Dots e Cursor)
+    const dots = document.getElementById("dots");
+    for (let i = 0; i < 40; i++) {
+      const d = document.createElement("div");
+      d.classList.add("dot");
+      d.style.left = Math.random() * 100 + "vw";
+      d.style.animationDuration = 6 + Math.random() * 6 + "s";
+      d.style.animationDelay = Math.random() * 5 + "s";
+      dots.appendChild(d);
+    }
+    const glow = document.getElementById("cursorGlow");
+    document.addEventListener("mousemove", (e) => {
+      glow.style.left = e.clientX + "px";
+      glow.style.top = e.clientY + "px";
+      glow.style.opacity = 1;
+    });
+    document.addEventListener("mouseleave", () => {
+      glow.style.opacity = 0;
+    });
+    // Lógica de Saudação e Relógio
+    const greet = document.getElementById("greeting");
+    const timeEmoji = document.getElementById("time-emoji");
+    function updateGreetingAndEmoji() {
+      const h = new Date().getHours();
+      let currentPart;
+      if (h >= 5 && h < 12) currentPart = GREETINGS.morning;
+      else if (h >= 12 && h < 18) currentPart = GREETINGS.afternoon;
+      else if (h >= 18 && h <= 23) currentPart = GREETINGS.evening;
+      else currentPart = GREETINGS.night;
+      greet.textContent = currentPart.text;
+      timeEmoji.textContent = currentPart.emoji;
+    }
+    function updateClock() {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById("clock").textContent = `${hh}:${mm}:${ss}`;
+      if (ss === '00' || ss === '30') updateGreetingAndEmoji();
+    }
+    updateGreetingAndEmoji();
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Curiosidades Card Logic
+    const curiosidadesCard = document.getElementById('curiosidadesCard');
+    const curiosidadesContent = document.getElementById('curiosidadesContent');
+
+    curiosidadesCard.addEventListener('click', () => {
+      curiosidadesContent.classList.toggle('show');
+    });
+
+    // === BACKGROUND SNAKE ===
+    const canvas = document.getElementById('snakeCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+    const segmentSize = 15;
+    let snake = [];
+    let dx = 1;
+    let dy = 0;
+    let speed = 3;
+    for (let i = 0; i < 20; i++) {
+      snake.push({ x: canvas.width / 2 - i * segmentSize, y: canvas.height / 2 });
+    }
+    function drawSnake() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < snake.length; i++) {
+        const opacity = 0.15 - (i / snake.length) * 0.1;
+        ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+        ctx.fillRect(snake[i].x, snake[i].y, segmentSize, segmentSize);
+      }
+    }
+    function updateSnake() {
+      const head = { x: snake[0].x + dx * speed, y: snake[0].y + dy * speed };
+      if (head.x < 0) head.x = canvas.width;
+      if (head.x > canvas.width) head.x = 0;
+      if (head.y < 0) head.y = canvas.height;
+      if (head.y > canvas.height) head.y = 0;
+      snake.unshift(head);
+      snake.pop();
+    }
+    function animate() {
+      updateSnake();
+      drawSnake();
+      requestAnimationFrame(animate);
+    }
+    document.addEventListener('keydown', (e) => {
+      switch (e.key) {
+        case 'ArrowUp': if (dy === 0) { dx = 0; dy = -1; } e.preventDefault(); break;
+        case 'ArrowDown': if (dy === 0) { dx = 0; dy = 1; } e.preventDefault(); break;
+        case 'ArrowLeft': if (dx === 0) { dx = -1; dy = 0; } e.preventDefault(); break;
+        case 'ArrowRight': if (dx === 0) { dx = 1; dy = 0; } e.preventDefault(); break;
+      }
+    });
+    animate();
+  </script>
+</body>
+</html>
